@@ -70,7 +70,9 @@ Limits are enforced before orders are matched to order depths. If for a product 
 ## Data Files
 
 Data for the following rounds is included:
-- Round 0: prices and anonymized trades data on RAINFOREST_RESIN and KELP that was used during tutorial submission runs.
+- Round 0: prices and anonymized trades data on RAINFOREST_RESIN and KELP that was used during tutorial submission runs. The anonymized trades data is derived from the submission of an algorithm that places no orders.
+- Round 1: prices and anonymized trades data on RAINFOREST_RESIN and KELP.
+- Round 6: prices and anonymized trades data that was used during submission runs. Round 6 day X represents the submission data of round X, where X = 0 means the tutorial round. The anonymized trades data is derived from the submission of an algorithm that places no orders.
 
 ## Environment Variables
 
