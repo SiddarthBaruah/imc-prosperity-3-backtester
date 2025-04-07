@@ -4,6 +4,10 @@ from collections import deque
 # from prosperity3bt.datamodel import Listing, Observation, Order, OrderDepth, ProsperityEncoder, Symbol, Trade, TradingState
 from datamodel import Listing, Observation, Order, OrderDepth, ProsperityEncoder, Symbol, Trade, TradingState
 from typing import Any, TypeAlias
+import pandas as pd
+import numpy as np
+from typing import List
+from statistics import mean
 
 JSON: TypeAlias = dict[str,
                        "JSON"] | list["JSON"] | str | int | float | bool | None
@@ -278,21 +282,14 @@ class KelpStrategy(MarketMakingStrategy):
 
 class Rainforest_Resin_Strategy(MarketMakingStrategy):
     def estimate_value(self, state: TradingState) -> int:
-        book = state.order_depths[self.symbol]
+        return 10000
 
-        sell_side = book.sell_orders
-        buy_side = book.buy_orders
-
-        dominant_bid = self._extract_most_populated_price(buy_side)
-        dominant_ask = self._extract_most_populated_price(sell_side)
-
-        return round((dominant_bid + dominant_ask) / 2)
-
-    def _extract_most_populated_price(self, side: dict[int, int]) -> int:
-        return max(side.items(), key=lambda entry: abs(entry[1]))[0]
 
 class Squid_Ink_Strategy(MarketMakingStrategy):
     def estimate_value(self, state: TradingState) -> int:
+        return self.estimate_value_using_LR(state)
+
+    def estimate_value_using_midpoint(self, state: TradingState) -> int:
         book = state.order_depths[self.symbol]
 
         sell_side = book.sell_orders
@@ -305,6 +302,43 @@ class Squid_Ink_Strategy(MarketMakingStrategy):
 
     def _extract_most_populated_price(self, side: dict[int, int]) -> int:
         return max(side.items(), key=lambda entry: abs(entry[1]))[0]
+
+    def estimate_value_using_LR(self, state: TradingState) -> int:
+
+        book = state.order_depths[self.symbol]
+
+        sell_side = book.sell_orders
+        buy_side = book.buy_orders
+
+        # Extract prices and volumes
+        sell_prices = list(sell_side.keys())
+        sell_volumes = list(sell_side.values())
+        buy_prices = list(buy_side.keys())
+        buy_volumes = list(buy_side.values())
+
+        # Combine prices and volumes into a single dataset
+        prices = sell_prices + buy_prices
+        volumes = sell_volumes + buy_volumes
+
+        # Create a DataFrame for linear regression
+        data = pd.DataFrame({"price": prices, "volume": volumes})
+        data["abs_volume"] = data["volume"].abs()
+
+        # Sort by price to ensure proper regression
+        # data = data.sort_values(by="price")
+
+        # Perform linear regression
+        x = data["price"].values.reshape(-1, 1)
+        y = data["abs_volume"].values
+        if len(x) > 1:  # Ensure there are enough points for regression
+            coeffs = np.polyfit(x.flatten(), y, 1)  # Linear regression
+            slope, intercept = coeffs
+            predicted_value = slope * mean(prices) + intercept
+        else:
+            # Fallback to mean if not enough data
+            predicted_value = mean(prices)
+
+        return round(predicted_value)
 
 
 class Trader:
