@@ -1,5 +1,5 @@
 from typing import Dict, List
-from prosperity3bt.datamodel import OrderDepth, TradingState, Order
+from datamodel import OrderDepth, TradingState, Order
 import collections
 from collections import defaultdict
 import random
@@ -7,7 +7,8 @@ import math
 import copy
 import numpy as np
 
-empty_dict = {'KELP': 0, 'RAINFOREST_RESIN': 0}
+empty_dict = {'PEARLS': 0, 'BANANAS': 0, 'COCONUTS': 0, 'PINA_COLADAS': 0, 'BERRIES': 0,
+              'DIVING_GEAR': 0, 'DIP': 0, 'BAGUETTE': 0, 'UKULELE': 0, 'PICNIC_BASKET': 0}
 
 
 def def_value():
@@ -20,7 +21,8 @@ INF = int(1e9)
 class Trader:
 
     position = copy.deepcopy(empty_dict)
-    POSITION_LIMIT = {'KELP': 30, 'RAINFOREST_RESIN': 30}
+    POSITION_LIMIT = {'PEARLS': 20, 'BANANAS': 20, 'COCONUTS': 600, 'PINA_COLADAS': 300, 'BERRIES': 250,
+                      'DIVING_GEAR': 50, 'DIP': 300, 'BAGUETTE': 150, 'UKULELE': 70, 'PICNIC_BASKET': 70}
     volume_traded = copy.deepcopy(empty_dict)
 
     person_position = defaultdict(def_value)
