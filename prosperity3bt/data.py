@@ -5,9 +5,14 @@ from prosperity3bt.datamodel import Symbol, Trade
 from prosperity3bt.file_reader import FileReader
 
 LIMITS = {
-    "RAINFOREST_RESIN": 50,
     "KELP": 50,
+    "RAINFOREST_RESIN": 50,
     "SQUID_INK": 50,
+    "CROISSANTS": 250,
+    "DJEMBES": 60,
+    "JAMS": 300,
+    "PICNIC_BASKET1": 60,
+    "PICNIC_BASKET2": 100,
 }
 
 
@@ -53,7 +58,8 @@ def create_backtest_data(round_num: int, day_num: int, prices: list[PriceRow], t
     for row in prices:
         prices_by_timestamp[row.timestamp][row.product] = row
 
-    trades_by_timestamp: dict[int, dict[Symbol, list[Trade]]] = defaultdict(lambda: defaultdict(list))
+    trades_by_timestamp: dict[int, dict[Symbol, list[Trade]]] = defaultdict(
+        lambda: defaultdict(list))
     for trade in trades:
         trades_by_timestamp[trade.timestamp][trade.symbol].append(trade)
 
@@ -79,7 +85,8 @@ def read_day_data(file_reader: FileReader, round_num: int, day_num: int, no_name
     prices = []
     with file_reader.file([f"round{round_num}", f"prices_round_{round_num}_day_{day_num}.csv"]) as file:
         if file is None:
-            raise ValueError(f"Prices data is not available for round {round_num} day {day_num}")
+            raise ValueError(
+                f"Prices data is not available for round {round_num} day {day_num}")
 
         for line in file.read_text(encoding="utf-8").splitlines()[1:]:
             columns = line.split(";")
@@ -102,10 +109,11 @@ def read_day_data(file_reader: FileReader, round_num: int, day_num: int, no_name
     trades_suffixes = ["nn"] if no_names else ["wn", "nn"]
 
     for suffix in trades_suffixes:
-        with file_reader.file([f"round{round_num}", f"trades_round_{round_num}_day_{day_num}_{suffix}.csv"]) as file:
+        with file_reader.file([f"round{round_num}", f"trades_round_{round_num}_day_{day_num}.csv"]) as file:
             if file is None:
                 trades_data_type = "Anonymized" if suffix == "nn" else "De-anonymized"
-                raise ValueError(f"{trades_data_type} trades data is not available for round {round_num} day {day_num}")
+                raise ValueError(
+                    f"{trades_data_type} trades data is not available for round {round_num} day {day_num}")
 
             for line in file.read_text(encoding="utf-8").splitlines()[1:]:
                 columns = line.split(";")
