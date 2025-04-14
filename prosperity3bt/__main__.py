@@ -223,7 +223,7 @@ def cli(
     if not hasattr(trader_module, "Trader"):
         print(f"{algorithm} does not expose a Trader class")
         sys.exit(1)
-
+    # raise ValueError(data)
     file_reader = parse_data(data)
     parsed_days = parse_days(file_reader, days)
     output_file = parse_out(out, no_out)

@@ -304,96 +304,6 @@ class KelpStrategy(MarketMakingStrategy):
         return max(orders, key=lambda order: abs(order[1]))[0]
 
 
-class CROISSANTS(MarketMakingStrategy):
-    def estimate_value(self, state: TradingState) -> int:
-        depth = state.order_depths[self.symbol]
-
-        bids = list(depth.buy_orders.items())
-        asks = list(depth.sell_orders.items())
-
-        most_common_bid = self._get_highest_volume_price(bids)
-        most_common_ask = self._get_highest_volume_price(asks)
-
-        current_mid = (most_common_bid + most_common_ask) / 2
-
-        return round(current_mid)
-
-    def _get_highest_volume_price(self, orders: list[tuple[int, int]]) -> int:
-        return max(orders, key=lambda order: abs(order[1]))[0]
-
-
-class Djembes_strat(MarketMakingStrategy):
-    def estimate_value(self, state: TradingState) -> int:
-        depth = state.order_depths[self.symbol]
-
-        bids = list(depth.buy_orders.items())
-        asks = list(depth.sell_orders.items())
-
-        most_common_bid = self._get_highest_volume_price(bids)
-        most_common_ask = self._get_highest_volume_price(asks)
-
-        current_mid = (most_common_bid + most_common_ask) / 2
-
-        return round(current_mid)
-
-    def _get_highest_volume_price(self, orders: list[tuple[int, int]]) -> int:
-        return max(orders, key=lambda order: abs(order[1]))[0]
-
-
-class Jams_strat(MarketMakingStrategy):
-    def estimate_value(self, state: TradingState) -> int:
-        depth = state.order_depths[self.symbol]
-
-        bids = list(depth.buy_orders.items())
-        asks = list(depth.sell_orders.items())
-
-        most_common_bid = self._get_highest_volume_price(bids)
-        most_common_ask = self._get_highest_volume_price(asks)
-
-        current_mid = (most_common_bid + most_common_ask) / 2
-
-        return round(current_mid)
-
-    def _get_highest_volume_price(self, orders: list[tuple[int, int]]) -> int:
-        return max(orders, key=lambda order: abs(order[1]))[0]
-
-
-class Picnic_Basket1_strat(MarketMakingStrategy):
-    def estimate_value(self, state: TradingState) -> int:
-        depth = state.order_depths[self.symbol]
-
-        bids = list(depth.buy_orders.items())
-        asks = list(depth.sell_orders.items())
-
-        most_common_bid = self._get_highest_volume_price(bids)
-        most_common_ask = self._get_highest_volume_price(asks)
-
-        current_mid = (most_common_bid + most_common_ask) / 2
-
-        return round(current_mid)
-
-    def _get_highest_volume_price(self, orders: list[tuple[int, int]]) -> int:
-        return max(orders, key=lambda order: abs(order[1]))[0]
-
-
-class Picnic_basket_2_strat(MarketMakingStrategy):
-    def estimate_value(self, state: TradingState) -> int:
-        depth = state.order_depths[self.symbol]
-
-        bids = list(depth.buy_orders.items())
-        asks = list(depth.sell_orders.items())
-
-        most_common_bid = self._get_highest_volume_price(bids)
-        most_common_ask = self._get_highest_volume_price(asks)
-
-        current_mid = (most_common_bid + most_common_ask) / 2
-
-        return round(current_mid)
-
-    def _get_highest_volume_price(self, orders: list[tuple[int, int]]) -> int:
-        return max(orders, key=lambda order: abs(order[1]))[0]
-
-
 class Rainforest_Resin_Strategy(MarketMakingStrategy):
     def estimate_value(self, state: TradingState) -> int:
         return 10000
@@ -550,22 +460,13 @@ class Trader:
             "KELP": 50,
             "RAINFOREST_RESIN": 50,
             "SQUID_INK": 50,
-            "CROISSANTS": 250,
-            "DJEMBES": 60,
-            "JAMS": 300,
-            "PICNIC_BASKET1": 60,
-            "PICNIC_BASKET2": 100,
         }
 
         self.strategies = {symbol: clazz(symbol, limits[symbol]) for symbol, clazz in {
             "KELP": KelpStrategy,
             "RAINFOREST_RESIN": Rainforest_Resin_Strategy,
             "SQUID_INK": Squid_Ink_Strategy,
-            "CROISSANTS": CROISSANTS,
-            "DJEMBES": Djembes_strat,
-            "JAMS": Jams_strat,
-            "PICNIC_BASKET1": Picnic_Basket1_strat,
-            "PICNIC_BASKET2": Picnic_basket_2_strat,
+
         }.items()}
 
     def run(self, state: TradingState) -> tuple[dict[Symbol, list[Order]], int, str]:
